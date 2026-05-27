@@ -1,4 +1,5 @@
 import requests
+import math
 from flask import Flask, render_template, request
 
 app = Flask(__name__)
@@ -31,6 +32,16 @@ def calcular():
         else:
             resultado = 'Erro: Divisão por zero'
             etapas = 'Não é possível dividir por zero.'
+
+    elif operacao == 'log':
+
+        if num1 > 0:
+            resultado = math.log(num1)
+            etapas = f'log({num1}) = {resultado}'
+
+        else:
+            resultado = 'Erro'
+            etapas = 'O logaritmo só pode ser calculado com números maiores que zero.'
 
     else:
         resultado = 'Operação inválida'
