@@ -1,0 +1,30 @@
+1. As classes que representam as tabelas ficam em models/. Camada responsável pelos dados.
+2. Banco: streamflix.db. Configurado em app.py.
+3. Models: ModeloBase, FilmeFavorito e HistoricoBusca.
+4. FilmeFavorito e HistoricoBusca herdam de ModeloBase (id, data_criacao, data_atualizacao).
+5. __tablename__ = 'filmes_favoritos'. Define o nome da tabela.
+6. tmdb_id: Integer, nullable=False, unique=True.
+7. adicionar() verifica duplicidade, cria objeto, salva e retorna; se existir retorna None.
+8. Método ultimas() na classe HistoricoBusca.
+9. Salva apenas campos necessários, não toda a resposta da API.
+10. models/__init__.py exporta db, ModeloBase, FilmeFavorito e HistoricoBusca.
+11. Blueprints: dashboard_bp, filmes_bp e favoritos_bp.
+12. Rota /filmes/populares em controllers/filmes_controller.py.
+13. Busca filmes populares na API e favoritos antes de renderizar.
+14. Usa HistoricoBusca para registrar pesquisas.
+15. Método POST em /favoritos/adicionar/<tmdb_id>.
+16. Se detalhe() retornar None, redireciona para populares.
+17. Blueprints registrados em app.py.
+18. Página inicial controlada por dashboard_controller.py (função index).
+19. tmdb_api.py pertence à camada Service.
+20. request.args = GET; request.form = POST.
+21. Templates ficam em views/templates/.
+22. Template base: layout.html.
+23. Menu usa url_for para dashboard, populares, melhores, buscar e favoritos.
+24. Seção de streaming em filmes/detalhe.html.
+25. _card.html é componente reutilizável incluído em outras páginas.
+26. Verificação por variável favorito para mostrar ação adequada.
+27. CSS em views/static/css/style.css.
+28. Loop {% for fav in favoritos %} exibe os favoritos.
+29. modo_demo indica uso de dados de demonstração.
+30. Fluxo: View → Controller → Model → Banco → Redirect.

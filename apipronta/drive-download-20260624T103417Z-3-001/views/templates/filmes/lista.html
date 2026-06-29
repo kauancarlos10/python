@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block title %}{{ titulo }} — StreamFlix{% endblock %}
+
+{% block content %}
+<h1>{{ titulo }}</h1>
+<p class="subtitulo">Dados via API TMDB · clique para ver streaming</p>
+
+<div class="grid-filmes">
+    {% for filme in filmes %}
+    {% include "filmes/_card.html" %}
+    {% else %}
+    <p class="vazio">Nenhum filme encontrado.</p>
+    {% endfor %}
+</div>
+{% endblock %}

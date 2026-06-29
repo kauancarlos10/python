@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}StreamFlix{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="nav">
+        <a class="nav-brand" href="{{ url_for('dashboard.index') }}">StreamFlix</a>
+        <a href="{{ url_for('filmes.populares') }}">Populares</a>
+        <a href="{{ url_for('filmes.melhores') }}">Melhores</a>
+        <a href="{{ url_for('filmes.buscar') }}">Buscar</a>
+        <a href="{{ url_for('favoritos.listar') }}">Favoritos</a>
+    </nav>
+
+    <main class="container">
+        {% if modo_demo %}
+        <div class="aviso-demo">
+            Modo demonstração — configure sua chave TMDB gratuita em <code>.env</code>
+            (copie de <code>.env.example</code>).
+            Cadastro: <a href="https://www.themoviedb.org/settings/api" target="_blank" style="color:#fde68a">themoviedb.org</a>
+        </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

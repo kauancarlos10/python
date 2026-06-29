@@ -1,0 +1,15 @@
+<article class="filme-card">
+    <a href="{{ url_for('filmes.detalhe', filme_id=filme.id) }}">
+        {% if filme.poster_url %}
+        <img class="filme-poster" src="{{ filme.poster_url }}" alt="{{ filme.titulo }}">
+        {% else %}
+        <div class="filme-poster-placeholder">🎬</div>
+        {% endif %}
+        <div class="filme-info">
+            <h3>{{ filme.titulo }}</h3>
+            <div class="filme-meta">
+                <span class="nota">★ {{ filme.nota }}</span> · {{ filme.ano }}
+            </div>
+        </div>
+    </a>
+</article>

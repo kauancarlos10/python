@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block title %}StreamFlix — Onde assistir{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h1>Os melhores filmes e onde assistir</h1>
+    <p class="subtitulo">Aula 12 — MVC + API TMDB + favoritos locais (SQLite)</p>
+</div>
+
+<div class="cards">
+    <div class="card">
+        <span class="card-num">{{ total_favoritos }}</span>
+        <span class="card-label">Favoritos salvos</span>
+    </div>
+    <div class="card">
+        <span class="card-num">{{ populares|length }}</span>
+        <span class="card-label">Populares (amostra)</span>
+    </div>
+    <div class="card">
+        <span class="card-num">{{ melhores|length }}</span>
+        <span class="card-label">Top rated (amostra)</span>
+    </div>
+</div>
+
+<form class="form-busca" method="GET" action="{{ url_for('filmes.buscar') }}">
+    <input type="text" name="q" placeholder="Buscar filme..." required>
+    <button type="submit" class="btn">Buscar</button>
+</form>
+
+<h2 class="secao-titulo">Melhores avaliados</h2>
+<div class="grid-filmes">
+    {% for filme in melhores %}
+    {% include "filmes/_card.html" %}
+    {% else %}
+    <p class="vazio">Nenhum filme carregado.</p>
+    {% endfor %}
+</div>
+
+<h2 class="secao-titulo">Populares agora</h2>
+<div class="grid-filmes">
+    {% for filme in populares %}
+    {% include "filmes/_card.html" %}
+    {% endfor %}
+</div>
+
+{% if historico %}
+<h2 class="secao-titulo">Buscas recentes</h2>
+<ul class="historico-lista">
+    {% for h in historico %}
+    <li>"{{ h.termo }}" — {{ h.resultados }} resultado(s) em {{ h.data_criacao.strftime('%d/%m/%Y %H:%M') }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

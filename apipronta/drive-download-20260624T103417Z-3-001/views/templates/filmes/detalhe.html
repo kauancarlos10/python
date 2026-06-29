@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+{% block title %}{{ filme.titulo }} — StreamFlix{% endblock %}
+
+{% block content %}
+<div class="detalhe-layout">
+    <div>
+        {% if filme.poster_url %}
+        <img class="detalhe-poster" src="{{ filme.poster_url }}" alt="{{ filme.titulo }}">
+        {% else %}
+        <div class="detalhe-poster-placeholder">🎬</div>
+        {% endif %}
+    </div>
+
+    <div>
+        <h1>{{ filme.titulo }}</h1>
+        <p class="subtitulo">
+            <span class="nota">★ {{ filme.nota }}</span> · {{ filme.ano }}
+            {% if filme.duracao %} · {{ filme.duracao }} min{% endif %}
+        </p>
+
+        {% if filme.generos %}
+        <p>
+            {% for g in filme.generos %}
+            <span class="tag">{{ g }}</span>
+            {% endfor %}
+        </p>
+        {% endif %}
+
+        <p>{{ filme.sinopse }}</p>
+
+        <div class="acoes-inline">
+            {% if favorito %}
+            <form method="POST" action="{{ url_for('favoritos.remover', tmdb_id=filme.id) }}">
+                <input type="hidden" name="voltar" value="{{ url_for('filmes.detalhe', filme_id=filme.id) }}">
+                <button type="submit" class="btn btn-outline">★ Remover dos favoritos</button>
+            </form>
+            {% else %}
+            <form method="POST" action="{{ url_for('favoritos.adicionar', tmdb_id=filme.id) }}">
+                <input type="hidden" name="titulo" value="{{ filme.titulo }}">
+                <input type="hidden" name="poster_path" value="{{ filme.poster_path or '' }}">
+                <input type="hidden" name="nota" value="{{ filme.nota }}">
+                <input type="hidden" name="ano" value="{{ filme.ano }}">
+                <input type="hidden" name="voltar" value="{{ url_for('filmes.detalhe', filme_id=filme.id) }}">
+                <button type="submit" class="btn">★ Salvar favorito</button>
+            </form>
+            {% endif %}
+            <a class="btn btn-outline" href="{{ url_for('filmes.populares') }}">← Voltar</a>
+        </div>
+
+        <div class="streaming-box">
+            <h3>📺 Onde assistir (Brasil)</h3>
+
+            {% if streaming.flatrate %}
+            <p><strong>Assinatura (streaming):</strong></p>
+            <div class="provedores">
+                {% for p in streaming.flatrate %}
+                <span class="provedor">
+                    {% if p.logo_url %}<img src="{{ p.logo_url }}" alt="">{% endif %}
+                    {{ p.nome }}
+                </span>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if streaming.rent %}
+            <p style="margin-top:12px"><strong>Alugar:</strong></p>
+            <div class="provedores">
+                {% for p in streaming.rent %}
+                <span class="provedor">{{ p.nome }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if streaming.buy %}
+            <p style="margin-top:12px"><strong>Comprar:</strong></p>
+            <div class="provedores">
+                {% for p in streaming.buy %}
+                <span class="provedor">{{ p.nome }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if not streaming.flatrate and not streaming.rent and not streaming.buy %}
+            <p class="vazio">Informação de streaming não disponível para este título.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

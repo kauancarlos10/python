@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block title %}Buscar — StreamFlix{% endblock %}
+
+{% block content %}
+<h1>Buscar filmes</h1>
+
+<form class="form-busca" method="GET" action="{{ url_for('filmes.buscar') }}">
+    <input type="text" name="q" value="{{ termo }}" placeholder="Digite o nome do filme..." required>
+    <button type="submit" class="btn">Buscar</button>
+</form>
+
+{% if termo %}
+<p class="subtitulo">{{ filmes|length }} resultado(s) para "{{ termo }}"</p>
+{% endif %}
+
+<div class="grid-filmes">
+    {% for filme in filmes %}
+    {% include "filmes/_card.html" %}
+    {% else %}
+    {% if termo %}
+    <p class="vazio">Nenhum filme encontrado para "{{ termo }}".</p>
+    {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}

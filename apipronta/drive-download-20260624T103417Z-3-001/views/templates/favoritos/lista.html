@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% block title %}Favoritos — StreamFlix{% endblock %}
+
+{% block content %}
+<h1>Meus favoritos</h1>
+<p class="subtitulo">Salvos no banco local SQLite (Model FilmeFavorito)</p>
+
+{% if favoritos %}
+<table>
+    <thead>
+        <tr>
+            <th>Filme</th>
+            <th>Nota</th>
+            <th>Ano</th>
+            <th>Salvo em</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for fav in favoritos %}
+        <tr>
+            <td>
+                <a href="{{ url_for('filmes.detalhe', filme_id=fav.tmdb_id) }}" style="color:#e94560">
+                    {{ fav.titulo }}
+                </a>
+            </td>
+            <td><span class="nota">★ {{ fav.nota or '—' }}</span></td>
+            <td>{{ fav.ano or '—' }}</td>
+            <td>{{ fav.data_criacao.strftime('%d/%m/%Y') }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('favoritos.remover', tmdb_id=fav.tmdb_id) }}" style="display:inline">
+                    <button type="submit" class="btn btn-sm btn-outline">Remover</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="vazio">Nenhum favorito ainda. Abra um filme e clique em "Salvar favorito".</p>
+{% endif %}
+{% endblock %}

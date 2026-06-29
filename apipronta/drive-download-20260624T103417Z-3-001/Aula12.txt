@@ -1,0 +1,71 @@
+# Aula 12 — StreamFlix
+
+Site de consulta de filmes e **onde assistir** (streaming), usando MVC + API TMDB.
+
+## Estrutura
+
+```
+Aula12/
+├── app.py
+├── .env.example
+├── models/           → FilmeFavorito, HistoricoBusca (SQLite)
+├── services/       → TmdbApi (integração HTTP)
+├── controllers/    → Blueprints: dashboard, filmes, favoritos
+└── views/
+    ├── templates/
+    └── static/css/
+```
+
+## API gratuita — TMDB
+
+1. Crie conta em https://www.themoviedb.org/
+2. Gere a API Key em https://www.themoviedb.org/settings/api
+3. Copie `.env.example` para `.env` e cole sua chave:
+
+```
+TMDB_API_KEY=sua_chave_real
+TMDB_REGION=BR
+TMDB_LANGUAGE=pt-BR
+```
+
+**Sem chave:** o projeto roda em **modo demo** com 3 filmes de exemplo.
+
+## Instalar e rodar
+
+```powershell
+cd flask/Aula12
+pip install -r requirements.txt
+python app.py
+```
+
+Acesse: http://127.0.0.1:5000
+
+## Funcionalidades
+
+| Rota | Descrição |
+|------|-----------|
+| `/` | Painel com melhores, populares e buscas recentes |
+| `/filmes/populares` | Filmes populares (TMDB) |
+| `/filmes/melhores` | Top rated |
+| `/filmes/buscar` | Busca por título |
+| `/filmes/<id>` | Detalhe + **streaming no Brasil** |
+| `/favoritos/` | Lista local (SQLite) |
+
+## MVC na prática
+
+| Camada | Responsabilidade neste projeto |
+|--------|-------------------------------|
+| **Model** | Favoritos e histórico de buscas no SQLite |
+| **Service** | Chamadas HTTP à API TMDB |
+| **Controller** | Rotas, lê form, chama Model/Service, escolhe View |
+| **View** | HTML + Jinja2 |
+
+## Endpoints TMDB usados
+
+- `GET /movie/popular` — populares
+- `GET /movie/top_rated` — melhores
+- `GET /search/movie` — busca
+- `GET /movie/{id}` — detalhes
+- `GET /movie/{id}/watch/providers` — Netflix, Prime, etc. (região BR)
+
+Profª Janaína Duarte / Rubens Lemos
