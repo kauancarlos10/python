@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block title %}Jogadores{% endblock %}
+{% block content %}
+<h1>Seleção Brasileira — Copa 2026</h1>
+<p><a class="btn" href="{{ url_for('jogador.cadastrar') }}">+ Novo Jogador</a></p>
+{% if jogadores %}
+<table><thead><tr><th>Nome</th><th>Posição</th><th>Clube</th><th>Cabeceio</th><th>Força</th><th>Média</th><th>Ações</th></tr></thead><tbody>
+{% for j in jogadores %}
+<tr><td>{{ j.nome }}</td><td>{{ j.posicao }}</td><td>{{ j.clube }}</td><td>{{ j.cabeceio }}</td><td>{{ j.forca }}</td><td>{{ "%.1f"|format(j.media) }}</td><td><a href="{{ url_for('jogador.editar', id=j.id) }}">Editar</a><a href="{{ url_for('jogador.excluir', id=j.id) }}">Excluir</a></td></tr>
+{% endfor %}
+</tbody></table>
+{% else %}<p class="vazio">Nenhum jogador cadastrado.</p>{% endif %}
+{% endblock %}

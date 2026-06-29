@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Jogadores{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo.css') }}">
+</head>
+<body>
+    <nav class="nav">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 504" height="36" style="margin-right:12px;border-radius:4px;">
+            <rect width="720" height="504" fill="#009c3b"/>
+            <polygon points="360,56 664,252 360,448 56,252" fill="#ffdf00"/>
+            <circle cx="360" cy="252" r="108" fill="#002776"/>
+            <path d="M252,220 a120,120 0 0,1 216,0" fill="none" stroke="#fff" stroke-width="16"/>
+        </svg>
+        <a href="{{ url_for('dashboard.index') }}">Início</a>
+        <a href="{{ url_for('jogador.index') }}">Jogadores</a>
+    </nav>
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

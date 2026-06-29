@@ -1,0 +1,7 @@
+{% extends "layout.html" %}
+{% block title %}Painel — Jogadores{% endblock %}
+{% block content %}
+<h1>Seleção Brasileira — Copa 2026</h1>
+<div class="cards"><div class="card"><span class="card-num">{{ total_jogadores }}</span><span class="card-label">Jogadores</span></div></div>
+<p><a class="btn" href="{{ url_for('jogador.index') }}">Ver jogadores</a></p>
+{% endblock %}

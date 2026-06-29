@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block title %}{% if jogador %}Editar Jogador{% else %}Novo Jogador{% endif %}{% endblock %}
+
+{% block content %}
+<h1>{% if jogador %}Editar Jogador{% else %}Novo Jogador{% endif %}</h1>
+
+<form method="POST">
+    <div class="form-grupo">
+        <label>Nome</label>
+        <input type="text" name="nome" value="{{ jogador.nome if jogador else '' }}" required>
+    </div>
+    <div class="form-grupo">
+        <label>Posição</label>
+        <select name="posicao" required>
+            <option value="">Selecione...</option>
+            {% for p in ["Goleiro", "Defensor", "Meio-campista", "Atacante"] %}
+            <option value="{{ p }}" {% if jogador and jogador.posicao == p %}selected{% endif %}>{{ p }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-grupo">
+        <label>Clube</label>
+        <input type="text" name="clube" value="{{ jogador.clube if jogador else '' }}" required>
+    </div>
+    <div class="form-grupo">
+        <label>Cabeceio</label>
+        <input type="number" name="cabeceio" min="1" max="10" value="{{ jogador.cabeceio if jogador else '' }}" required>
+    </div>
+    <div class="form-grupo">
+        <label>Força</label>
+        <input type="number" name="forca" min="1" max="10" value="{{ jogador.forca if jogador else '' }}" required>
+    </div>
+    <button type="submit">{% if jogador %}Atualizar{% else %}Salvar{% endif %}</button>
+</form>
+
+<p><a href="{{ url_for('jogador.index') }}">← Voltar</a></p>
+{% endblock %}
