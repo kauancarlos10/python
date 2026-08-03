@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block title %}Cadastros — EndereçoTech{% endblock %}
+
+{% block content %}
+<h1>Cadastros</h1>
+<p class="subtitulo">Aula 14 — Model, Service, Controller e View com Brasil API (CEP)</p>
+
+<p><a class="btn btn-primario" href="{{ url_for('cadastros.novo') }}">+ Novo cadastro</a></p>
+
+{% if cadastros %}
+<table class="tabela">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Profissão</th>
+            <th>Cidade</th>
+            <th>CEP</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in cadastros %}
+        <tr>
+            <td><a href="{{ url_for('cadastros.detalhe', cadastro_id=c.id) }}">{{ c.nome }}</a></td>
+            <td>{{ c.profissao }}</td>
+            <td>{{ c.cidade }}/{{ c.estado }}</td>
+            <td>{{ c.cep }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="card vazio">
+    <p>Nenhum cadastro ainda.</p>
+    <p><a class="btn" href="{{ url_for('cadastros.novo') }}">Criar primeiro cadastro</a></p>
+</div>
+{% endif %}
+{% endblock %}

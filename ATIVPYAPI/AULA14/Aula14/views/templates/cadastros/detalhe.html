@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block title %}{{ cadastro.nome }} — EndereçoTech{% endblock %}
+
+{% block content %}
+<h1>{{ cadastro.nome }}</h1>
+<p class="subtitulo">{{ cadastro.profissao }}</p>
+
+<div class="card detalhe">
+    <dl>
+        <dt>CEP</dt>
+        <dd>{{ cadastro.cep }}</dd>
+
+        <dt>Logradouro</dt>
+        <dd>{{ cadastro.logradouro }}, {{ cadastro.numero }}</dd>
+
+        {% if cadastro.complemento %}
+        <dt>Complemento</dt>
+        <dd>{{ cadastro.complemento }}</dd>
+        {% endif %}
+
+        <dt>Bairro</dt>
+        <dd>{{ cadastro.bairro }}</dd>
+
+        <dt>Cidade / UF</dt>
+        <dd>{{ cadastro.cidade }} / {{ cadastro.estado }}</dd>
+
+        <dt>Endereço completo</dt>
+        <dd>{{ cadastro.endereco_completo() }}</dd>
+
+        <dt>Cadastrado em</dt>
+        <dd>{{ cadastro.data_criacao.strftime('%d/%m/%Y %H:%M') }}</dd>
+    </dl>
+</div>
+
+<p>
+    <a class="btn" href="{{ url_for('cadastros.lista') }}">← Voltar</a>
+    <a class="btn" href="/api/cadastros/{{ cadastro.id }}" target="_blank">Ver JSON</a>
+</p>
+{% endblock %}

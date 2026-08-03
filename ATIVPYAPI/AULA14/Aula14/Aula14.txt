@@ -1,0 +1,153 @@
+Aula 14 — Cadastro de Endereços (Brasil API)
+=============================================
+
+Camadas: Model | Service | Controller | View
+
+CONCEITOS
+---------
+- Model (Cadastro): persiste nome, profissão e endereço no SQLite
+  * Cadastro.a_partir_de_dict(dados) — único método para web E API
+- Service (brasilapi_cep): consulta CEP em https://brasilapi.com.br/api/cep/v2/{cep}
+- Controller web: render_template (site responsivo preto/verde)
+- Controller API: jsonify (REST para Thunder Client ou JavaScript do site)
+- View: templates Jinja + CSS + JS que integra com /api/cep/{cep}
+
+DIFERENÇA DA AULA 13
+--------------------
+Na Aula 13 a API externa ficava separada do site.
+Na Aula 14 o formulário web CHAMA a própria API (/api/cep) via JavaScript
+e preenche logradouro, bairro, cidade e estado automaticamente.
+
+No POST da API (/api/cadastros) o CEP também busca o endereço sozinho:
+basta enviar nome, profissão, CEP e número.
+
+COMO RODAR
+----------
+cd flask/Aula14
+pip install -r requirements.txt
+python app.py
+
+Deixe o app rodando em http://127.0.0.1:5000
+
+
+=================================================================
+PASSO A PASSO — THUNDER CLIENT (versão free, sem Import)
+=================================================================
+Na versão gratuita o Import de coleção costuma não funcionar.
+Monte os requests na mão.
+
+PASSO 1 — Subir a API
+---------------------
+1. Abra o terminal na pasta flask/Aula14
+2. Execute: python app.py
+3. Confirme: Running on http://127.0.0.1:5000
+
+
+PASSO 2 — Abrir o Thunder Client
+--------------------------------
+1. Instale a extensão Thunder Client (se ainda não tiver)
+2. Clique no ícone do raio na barra lateral
+3. Clique em New Request
+
+
+PASSO 3 — Testar busca de CEP (GET)
+-----------------------------------
+1. Método: GET
+2. URL: http://127.0.0.1:5000/api/cep/01310100
+3. Clique em Send
+4. Resposta esperada: JSON com logradouro, bairro, cidade, estado
+
+
+PASSO 4 — Inserir cadastro com JSON (POST + CEP automático)
+-----------------------------------------------------------
+1. Clique em New Request (ou limpe o request anterior)
+2. Método: POST
+3. URL: http://127.0.0.1:5000/api/cadastros
+4. Aba Headers → adicione:
+     Content-Type = application/json
+5. Aba Body → escolha JSON → cole:
+
+{
+  "nome": "Maria Souza",
+  "profissao": "Designer",
+  "cep": "22041-080",
+  "numero": "502",
+  "complemento": "Apto 301"
+}
+
+Obs.: não precisa enviar logradouro, bairro, cidade nem estado.
+      A API completa esses campos pelo CEP (Brasil API).
+
+6. Clique em Send
+7. Resposta esperada: status 201 Created
+   com o cadastro completo (incluindo endereço preenchido)
+
+
+PASSO 5 — Conferir se gravou (GET)
+----------------------------------
+1. New Request
+2. Método: GET
+3. URL: http://127.0.0.1:5000/api/cadastros
+4. Send → a Maria Souza deve aparecer na lista
+
+Ou abra no navegador: http://127.0.0.1:5000/cadastros/
+
+
+PASSO 6 — Comparar com o site (opcional)
+----------------------------------------
+1. Abra http://127.0.0.1:5000/cadastros/novo
+2. Digite um CEP válido e saia do campo
+3. O endereço preenche sozinho (JavaScript chama /api/cep)
+
+Mensagem-chave:
+  Site  → JS chama GET /api/cep e preenche o formulário
+  Thunder Client → POST /api/cadastros e a API completa o endereço
+
+
+FLUXO DO POST
+-------------
+Thunder Client
+  POST { nome, profissao, cep, numero }
+        ↓
+  /api/cadastros
+        ↓
+  buscar_cep(cep)  →  Brasil API
+        ↓
+  completa logradouro, bairro, cidade, estado
+        ↓
+  Cadastro.a_partir_de_dict(...) → SQLite
+        ↓
+  jsonify 201 (cadastro completo)
+
+
+ERROS COMUNS
+------------
+- 400 "Envie JSON no body"
+  → Faltou header Content-Type: application/json ou Body vazio
+
+- 400 "CEP não encontrado"
+  → Use um CEP real (ex.: 01310-100 ou 22041-080)
+
+- 400 "Campos obrigatórios"
+  → Faltou numero (o número não vem da API de CEP)
+
+- Connection refused / Failed to fetch
+  → O app não está rodando: python app.py
+
+
+REQUESTS OPCIONAIS
+------------------
+GET    http://127.0.0.1:5000/api/cadastros/1
+PUT    http://127.0.0.1:5000/api/cadastros/1
+       Header: Content-Type = application/json
+       Body JSON: { "profissao": "UX Designer", "numero": "510" }
+
+DELETE http://127.0.0.1:5000/api/cadastros/1
+
+
+TESTAR SITE
+-----------
+http://127.0.0.1:5000/cadastros/novo
+(digite um CEP válido e saia do campo — o endereço preenche sozinho)
+
+Roteiro em Markdown (mesmo conteúdo): THUNDER_CLIENT.md

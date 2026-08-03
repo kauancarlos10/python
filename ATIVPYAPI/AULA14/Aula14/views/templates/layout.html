@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Aula 14 — Cadastro de Endereços{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="nav">
+        <a class="nav-brand" href="{{ url_for('cadastros.lista') }}">EndereçoTech</a>
+        <a href="{{ url_for('cadastros.lista') }}">Cadastros</a>
+        <a href="{{ url_for('cadastros.novo') }}">Novo cadastro</a>
+        <a href="/api/cadastros" target="_blank">API JSON</a>
+    </nav>
+
+    <main class="container">
+        <div class="aviso-api">
+            Site integrado com <strong>Brasil API</strong> — ao digitar o CEP, o endereço é preenchido automaticamente via
+            <a href="/api/cep/01001000" target="_blank">GET /api/cep/{cep}</a>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for categoria, mensagem in messages %}
+                    <div class="flash flash-{{ categoria }}">{{ mensagem }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

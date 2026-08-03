@@ -1,0 +1,128 @@
+{% extends "layout.html" %}
+{% block title %}Novo cadastro — EndereçoTech{% endblock %}
+
+{% block content %}
+<h1>Novo cadastro</h1>
+<p class="subtitulo">Digite o CEP para buscar o endereço automaticamente</p>
+
+<div class="card">
+    <form method="post" class="form-grid" id="form-cadastro">
+        <div class="campo campo-full">
+            <label for="nome">Nome *</label>
+            <input type="text" id="nome" name="nome" required placeholder="Seu nome completo">
+        </div>
+
+        <div class="campo campo-full">
+            <label for="profissao">Profissão *</label>
+            <input type="text" id="profissao" name="profissao" required placeholder="Ex.: Desenvolvedor(a)">
+        </div>
+
+        <div class="campo">
+            <label for="cep">CEP *</label>
+            <input type="text" id="cep" name="cep" required maxlength="9" placeholder="00000-000">
+            <div id="cep-status" class="cep-status"></div>
+        </div>
+
+        <div class="campo">
+            <label for="numero">Número *</label>
+            <input type="text" id="numero" name="numero" required placeholder="123">
+        </div>
+
+        <div class="campo campo-full">
+            <label for="logradouro">Logradouro *</label>
+            <input type="text" id="logradouro" name="logradouro" required readonly>
+        </div>
+
+        <div class="campo">
+            <label for="bairro">Bairro *</label>
+            <input type="text" id="bairro" name="bairro" required readonly>
+        </div>
+
+        <div class="campo">
+            <label for="cidade">Cidade *</label>
+            <input type="text" id="cidade" name="cidade" required readonly>
+        </div>
+
+        <div class="campo">
+            <label for="estado">Estado *</label>
+            <input type="text" id="estado" name="estado" required maxlength="2" readonly>
+        </div>
+
+        <div class="campo">
+            <label for="complemento">Complemento</label>
+            <input type="text" id="complemento" name="complemento" placeholder="Apto, bloco...">
+        </div>
+
+        <div class="campo campo-full">
+            <button type="submit" class="btn btn-primario">Salvar cadastro</button>
+            <a class="btn" href="{{ url_for('cadastros.lista') }}" style="margin-left: 0.5rem;">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+    const cepInput = document.getElementById("cep");
+    const statusEl = document.getElementById("cep-status");
+    const campos = ["logradouro", "bairro", "cidade", "estado"];
+
+    function limparEndereco() {
+        campos.forEach(function (id) {
+            document.getElementById(id).value = "";
+        });
+    }
+
+    function formatarCep(valor) {
+        const digitos = valor.replace(/\D/g, "").slice(0, 8);
+        if (digitos.length > 5) {
+            return digitos.slice(0, 5) + "-" + digitos.slice(5);
+        }
+        return digitos;
+    }
+
+    cepInput.addEventListener("input", function () {
+        cepInput.value = formatarCep(cepInput.value);
+    });
+
+    async function buscarCep() {
+        const cep = cepInput.value.replace(/\D/g, "");
+        statusEl.className = "cep-status";
+        statusEl.textContent = "";
+
+        if (cep.length < 8) {
+            limparEndereco();
+            return;
+        }
+
+        statusEl.className = "cep-status carregando";
+        statusEl.textContent = "Buscando endereço na Brasil API...";
+
+        try {
+            const resp = await fetch("/api/cep/" + cep);
+            const data = await resp.json();
+
+            if (!resp.ok) {
+                throw new Error(data.erro || "CEP não encontrado");
+            }
+
+            document.getElementById("logradouro").value = data.logradouro || "";
+            document.getElementById("bairro").value = data.bairro || "";
+            document.getElementById("cidade").value = data.cidade || "";
+            document.getElementById("estado").value = data.estado || "";
+            cepInput.value = formatarCep(data.cep || cep);
+
+            statusEl.className = "cep-status sucesso";
+            statusEl.textContent = "Endereço encontrado via " + (data.fonte || "Brasil API");
+        } catch (err) {
+            limparEndereco();
+            statusEl.className = "cep-status erro";
+            statusEl.textContent = err.message;
+        }
+    }
+
+    cepInput.addEventListener("blur", buscarCep);
+})();
+</script>
+{% endblock %}
