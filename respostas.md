@@ -1,0 +1,6 @@
+## Zandaya (19.8)
+## Tom Holland  (20.1)
+## Ariana Grande (27.6)
+## Billie Eilish (35.7)
+## Professora Conceição (23.2)
+## Professor Bernardo (32.9)
