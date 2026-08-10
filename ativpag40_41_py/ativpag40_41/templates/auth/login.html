@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Entrar — Organiza{% endblock %}
+{% block auth_content %}
+<div class="auth-screen">
+    <section class="auth-presentation"><a class="logo auth-logo" href="{{ url_for('login') }}"><span class="logo-symbol"><i class="bi bi-check2-square"></i></span><span>Organiza</span></a><div class="presentation-copy"><span class="section-tag">SEU ESPAÇO</span><h1>Menos confusão.<br>Mais coisas feitas.</h1><p>Coloque suas tarefas em um só lugar, acompanhe cada etapa e veja seu progresso sem complicação.</p><ul><li><i class="bi bi-check2"></i> Lista pessoal de atividades</li><li><i class="bi bi-check2"></i> Acompanhamento por status</li><li><i class="bi bi-check2"></i> Visão gráfica do progresso</li></ul></div></section>
+    <section class="auth-box"><div class="auth-form"><a class="logo mobile-logo" href="{{ url_for('login') }}"><span class="logo-symbol"><i class="bi bi-check2-square"></i></span><span>Organiza</span></a><span class="section-tag">BEM-VINDO</span><h2>Entrar na conta</h2><p>Acesse seu quadro para continuar.</p><form method="post"><div class="field"><label for="email">E-mail</label><input class="control" type="email" id="email" name="email" required autocomplete="email" placeholder="seuemail@exemplo.com"></div><div class="field"><label for="senha">Senha</label><input class="control" type="password" id="senha" name="senha" required autocomplete="current-password" placeholder="Digite sua senha"></div><button class="new-task full" type="submit"><i class="bi bi-box-arrow-in-right"></i> Entrar</button></form><div class="auth-link">Ainda não possui cadastro? <a href="{{ url_for('registro') }}">Criar conta</a></div></div></section>
+</div>
+{% endblock %}

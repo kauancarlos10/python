@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ "Editar tarefa" if tarefa else "Nova tarefa" }} — Organiza{% endblock %}
+{% block content %}
+<div class="form-wrap">
+    <div class="form-intro"><span class="section-tag">TAREFAS</span><h1>{{ "Ajustar tarefa" if tarefa else "Adicionar tarefa" }}</h1><p>{{ "Atualize as informações que precisar." if tarefa else "Registre uma nova atividade no seu painel." }}</p></div>
+    <section class="form-card">
+        <form method="post">
+            <div class="field"><label for="titulo">O que precisa ser feito?</label><input class="control" id="titulo" name="titulo" maxlength="120" required value="{{ tarefa['titulo'] if tarefa else '' }}" placeholder="Ex.: Revisar conteúdo da prova"></div>
+            <div class="field"><label for="descricao">Detalhes</label><textarea class="control" id="descricao" name="descricao" maxlength="1000" placeholder="Escreva alguma informação que ajude você depois...">{{ tarefa['descricao'] if tarefa else '' }}</textarea></div>
+            <div class="field"><label for="status">Como está?</label>{% set current = tarefa['status'] if tarefa else 'pendente' %}<select class="control" id="status" name="status"><option value="pendente" {% if current=="pendente" %}selected{% endif %}>Ainda não comecei</option><option value="andamento" {% if current=="andamento" %}selected{% endif %}>Estou fazendo</option><option value="concluida" {% if current=="concluida" %}selected{% endif %}>Já finalizei</option></select></div>
+            <div class="form-buttons"><button class="new-task" type="submit"><i class="bi bi-check2"></i> {{ "Salvar mudanças" if tarefa else "Adicionar ao quadro" }}</button><a class="cancel" href="{{ url_for('dashboard') }}">Cancelar</a></div>
+        </form>
+    </section>
+</div>
+{% endblock %}

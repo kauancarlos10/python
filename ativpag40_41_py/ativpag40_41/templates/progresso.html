@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Meu progresso — Organiza{% endblock %}
+{% block content %}
+<section class="welcome-row"><div><span class="section-tag">ACOMPANHAMENTO</span><h1>Meu progresso</h1><p>Uma visão rápida de como suas tarefas estão distribuídas.</p></div><a class="cancel" href="{{ url_for('dashboard') }}"><i class="bi bi-arrow-left"></i> Voltar</a></section>
+<div class="progress-layout">
+    <section class="panel chart-panel"><div class="panel-heading"><div><span class="section-tag">DISTRIBUIÇÃO</span><h2>Status das tarefas</h2></div><span class="live-label">● atualizado</span></div><div class="chart-area"><canvas id="progressChart"></canvas></div></section>
+    <section class="panel summary-panel"><span class="section-tag">NÚMEROS</span><h2>Resumo</h2><div class="summary-list"><div class="summary-item pending"><span>Pendentes</span><strong id="countPendente">0</strong></div><div class="summary-item progress"><span>Em andamento</span><strong id="countAndamento">0</strong></div><div class="summary-item done"><span>Finalizadas</span><strong id="countConcluida">0</strong></div></div></section>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+(async function () {
+    const response = await fetch("{{ url_for('api_progresso') }}");
+    if (!response.ok) throw new Error("Falha ao carregar");
+    const data = await response.json();
+    document.getElementById("countPendente").textContent = data.pendente;
+    document.getElementById("countAndamento").textContent = data.andamento;
+    document.getElementById("countConcluida").textContent = data.concluida;
+    const dark = document.documentElement.dataset.theme === "dark";
+    new Chart(document.getElementById("progressChart"), {
+        type: "doughnut",
+        data: { labels: ["Pendentes", "Em andamento", "Finalizadas"], datasets: [{ data: [data.pendente, data.andamento, data.concluida], backgroundColor: ["#e59a35", "#4f7cff", "#21a477"], borderWidth: 0 }] },
+        options: { responsive: true, maintainAspectRatio: false, cutout: "70%", plugins: { legend: { position: "bottom", labels: { color: dark ? "#f5f7fb" : "#263238", padding: 18 } } } }
+    });
+})().catch(() => { document.querySelector(".chart-area").innerHTML = "<p>Não foi possível carregar o gráfico.</p>"; });
+</script>
+{% endblock %}

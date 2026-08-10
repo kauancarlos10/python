@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Visão geral — Organiza{% endblock %}
+{% block content %}
+<section class="welcome-row">
+    <div><span class="section-tag">RESUMO DO DIA</span><h1>Olá, {{ current_user["nome"].split()[0] }}!</h1><p>Confira suas tarefas e avance no seu ritmo.</p></div>
+    <a class="new-task" href="{{ url_for('nova_tarefa') }}"><i class="bi bi-plus-lg"></i> Adicionar tarefa</a>
+</section>
+
+<section class="inspiration">
+    <div class="inspiration-icon"><i class="bi bi-lightbulb"></i></div>
+    <div class="inspiration-text"><span>IDEIA PARA HOJE</span><p id="fraseMotivacional">Carregando...</p></div>
+    <button id="novaFrase" class="refresh" type="button" title="Atualizar frase"><i class="bi bi-arrow-repeat"></i></button>
+</section>
+
+<section class="numbers">
+    <article class="number-card"><div class="number-icon pending"><i class="bi bi-clock"></i></div><div><small>Pendentes</small><strong>{{ tarefas|selectattr("status","equalto","pendente")|list|length if status_filter == "todas" else "—" }}</strong></div></article>
+    <article class="number-card"><div class="number-icon progress"><i class="bi bi-arrow-right-circle"></i></div><div><small>Em andamento</small><strong>{{ tarefas|selectattr("status","equalto","andamento")|list|length if status_filter == "todas" else "—" }}</strong></div></article>
+    <article class="number-card"><div class="number-icon done"><i class="bi bi-check2-circle"></i></div><div><small>Finalizadas</small><strong>{{ tarefas|selectattr("status","equalto","concluida")|list|length if status_filter == "todas" else "—" }}</strong></div></article>
+</section>
+
+<div class="tasks-heading">
+    <div><span class="section-tag">LISTA</span><h2>Minhas tarefas</h2></div>
+    <form method="get" action="{{ url_for('dashboard') }}">
+        <select class="select-filter" name="status" onchange="this.form.submit()" aria-label="Filtrar tarefas">
+            <option value="todas" {% if status_filter=="todas" %}selected{% endif %}>Tudo</option>
+            <option value="pendente" {% if status_filter=="pendente" %}selected{% endif %}>Pendentes</option>
+            <option value="andamento" {% if status_filter=="andamento" %}selected{% endif %}>Em andamento</option>
+            <option value="concluida" {% if status_filter=="concluida" %}selected{% endif %}>Finalizadas</option>
+        </select>
+    </form>
+</div>
+
+{% if tarefas %}
+<div class="task-grid">
+{% for tarefa in tarefas %}
+<article class="task-card state-{{ tarefa['status'] }}">
+    <div class="task-meta"><span class="status-dot"></span><span>{% if tarefa["status"]=="pendente" %}Pendente{% elif tarefa["status"]=="andamento" %}Em andamento{% else %}Finalizada{% endif %}</span></div>
+    <h3>{{ tarefa["titulo"] }}</h3>
+    <p>{{ tarefa["descricao"] or "Sem detalhes adicionados a esta tarefa." }}</p>
+    <div class="task-footer">
+        <a class="action edit" href="{{ url_for('editar', task_id=tarefa['id']) }}"><i class="bi bi-pencil"></i> Editar</a>
+        <form method="post" action="{{ url_for('concluir', task_id=tarefa['id']) }}"><button class="action complete" type="submit"><i class="bi bi-check-lg"></i> {% if tarefa["status"]=="concluida" %}Reabrir{% else %}Concluir{% endif %}</button></form>
+        <form method="post" action="{{ url_for('excluir', task_id=tarefa['id']) }}" onsubmit="return confirm('Excluir esta tarefa?');"><button class="action remove" type="submit" title="Excluir"><i class="bi bi-trash3"></i></button></form>
+    </div>
+</article>
+{% endfor %}
+</div>
+{% else %}
+<div class="empty-state"><div class="empty-icon"><i class="bi bi-journal-check"></i></div><h2>Seu quadro está vazio</h2><p>Adicione uma tarefa para começar a acompanhar seu dia.</p><a class="new-task" href="{{ url_for('nova_tarefa') }}"><i class="bi bi-plus-lg"></i> Criar primeira tarefa</a></div>
+{% endif %}
+{% endblock %}
